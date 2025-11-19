@@ -5,7 +5,8 @@ import react from '@vitejs/plugin-react'
 const repoName = '/Password-manager-/'
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [ tailwindcss(),react(),],
+
   base: repoName,
+  plugins: [ tailwindcss(),react(),],
   
 })
