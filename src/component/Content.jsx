@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
+  import { ToastContainer, toast } from 'react-toastify';
+
 
 const Content = () => {
+  const notify = (message) => toast(message);
+
   const getInitialDetails = () => {
     const savedDetails = localStorage.getItem("passwordDetails");
     return savedDetails ? JSON.parse(savedDetails) : [];
@@ -26,7 +30,7 @@ const Content = () => {
 
   const handlesave = () => {
     if (!website || !username || !password) {
-      alert("Please fill all the fields");
+      notify("Please fill all the fields");
       return;
     }
     const id = new Date().getTime().toString();
@@ -35,11 +39,12 @@ const Content = () => {
     setWebsite("");
     setusername("");
     setpassword("");
-    console.log(newDetail);
+    notify("Password Saved Successfully!");
   };
 
   function handleClearAll() {
     setdetail([]);
+    notify("All Passwords Cleared!");
   }
 
   function handleEdit(id) {
@@ -50,6 +55,7 @@ const Content = () => {
       setpassword(itemToEdit.password);
       const updatedDetails = detail.filter((item) => item.id !== id);
       setdetail(updatedDetails);
+      notify("Ready to edit!");
     }
   }
 
@@ -57,6 +63,10 @@ const Content = () => {
     const updatedDetails = detail.filter((item) => item.id !== id);
     setdetail(updatedDetails);
   }
+function handlecopy(text) {
+  navigator.clipboard.writeText(text);
+  notify("Copied to clipboard!");
+}
 
   return (
     <>
@@ -69,7 +79,7 @@ const Content = () => {
 
         <div className="text-md text-green-900">Your Own Password Manager</div>
 
-        <div className="w-full">
+        <div className="w-full max-w-lg">
           <input
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
@@ -99,7 +109,7 @@ const Content = () => {
                 name=""
                 id=""
                 placeholder="Enter Password"
-                src=""
+              
               />
               <span onClick={viewpassword} className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"><lord-icon
     src="https://cdn.lordicon.com/efmfrlbq.json"
@@ -157,36 +167,52 @@ const Content = () => {
               {detail.map((item) => (
                 <div
                   key={item.id}
-                  className="flex justify-between w-full p-3 bg-green-200"
+                  className="flex justify-between w-full p-3 pl-4 bg-green-200"
                 >
-                  <div className="w-1/3 text-left">
-                    <a href="{item.website}">{item.website}</a>
+                  <div className="w-1/4 text-left truncate">
+                    <a href="{item.website}"target="_/">{item.website} </a>
                   </div>
-                  <div className="w-1/3 text-left">{item.username}</div>
-                  <div className="w-1/3 text-left">{item.password}</div>
 
-                  <div className="w-auto flex space-x-4">
+                  <div className="w-1/4 text-left flex items-center gap-1">
+                  <span>{item.username} 
+                    </span>
+                    <lord-icon
+    src="https://cdn.lordicon.com/hmpomorl.json"
+    trigger="click"
+    className="h-5 w-5 cursor-pointer pt-1"
+    onClick={()=>{handlecopy(item.username)}}
+   >
+</lord-icon></div>
+                  <div className="w-1/4 text-left flex items-center gap-1"><span>{item.password}
+                    </span>
+                     <lord-icon
+    src="https://cdn.lordicon.com/hmpomorl.json"
+    trigger="click"
+    className="h-5 w-5 cursor-pointer pt-1"
+    onClick={()=>{handlecopy(item.password)}}
+   >
+</lord-icon></div>
+
+                  <div className="w-1/6 flex justify-center space-x-3">
                     <button
-                      className="text-red-600 text-sm cursor-pointer"
+                      className="text-red-600 text-sm cursor-pointer hover:scale-110 transition-transform"
                       onClick={() => handleEdit(item.id)}
                     >
                       <lord-icon
                         src="https://cdn.lordicon.com/cbtlerlm.json"
                         trigger="hover"
                         stroke="bold"
-                        colors="primary:#ffffff,secondary:#ffc738,tertiary:#ebe6ef,quaternary:#f9c9c0,quinary:#3a3347"
-                      ></lord-icon>
+                        style={{ width: '25px', height: '25px' }}></lord-icon>
                     </button>
                     <button
-                      className="text-red-600 text-sm cursor-pointer"
+                      className="text-red-600 text-sm cursor-pointer hover:scale-110 transition-transform"
                       onClick={() => handleDelete(item.id)}
                     >
                       <lord-icon
                         src="https://cdn.lordicon.com/sxhqklqh.json"
                         trigger="click"
                         stroke="bold"
-                        colors="primary:#ffffff,secondary:#e88c30,tertiary:#646e78"
-                      ></lord-icon>
+                        style={{ width: '25px', height: '25px' }}></lord-icon>
                     </button>
                   </div>
                 </div>
@@ -195,6 +221,7 @@ const Content = () => {
           )}
         </div>
       </div>
+      <ToastContainer position="bottom-center" />
     </>
   );
 };
